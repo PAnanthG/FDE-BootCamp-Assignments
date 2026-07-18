@@ -1,0 +1,31 @@
+# Assignment-local ignores.
+# The repo root .gitignore already covers .env, *.log, __pycache__/ and venvs;
+# this file makes THIS folder self-contained if it's moved to its own repo, and
+# adds the artifacts this build produces.
+
+# --- secrets: committing one is an automatic fail on this assignment ---
+.env
+.env.*
+!.env.example
+
+# --- runtime artifacts ---
+*.log                     # gateway.log, ai-service.log
+translations.db           # SQLite cache — regenerable, and can hold page text
+*.db
+*.db-wal                  # WAL mode side-files (we enable PRAGMA journal_mode=WAL)
+*.db-shm
+
+# --- dependencies (regenerable, huge) ---
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# --- eval / benchmark output ---
+REPORT.md
+report.json
+_bench.json
+results.json
+
+.DS_Store
