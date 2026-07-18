@@ -1,0 +1,11 @@
+# Build context for the gateway (see backend/gateway-node/Dockerfile).
+.git
+node_modules
+.venv
+.env
+.env.*
+!.env.example
+*.log
+*.db
+*.db-wal
+*.db-shm
