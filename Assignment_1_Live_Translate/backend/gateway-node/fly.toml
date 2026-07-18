@@ -6,7 +6,7 @@ primary_region = "iad"
 [env]
   PORT = "8787"
   AI_SERVICE_URL = "https://live-translate-ai-pananthg.fly.dev"
-  AI_TIMEOUT_MS = "40000"
+  AI_TIMEOUT_MS = "120000"
 
 [http_service]
   internal_port = 8787
