@@ -1,0 +1,32 @@
+app = "live-translate-ai-pananthg"
+primary_region = "iad"
+
+[build]
+
+[env]
+  TRANSLATION_DB_PATH = "/data/translations.db"
+  MODEL = "claude-sonnet-4-6"
+  FORCE_TARGET = "nl"
+  CACHE_MEM_MAX = "5000"
+
+[mounts]
+  source = "translate_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "15s"
+    method = "GET"
+    timeout = "5s"
+    path = "/health"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

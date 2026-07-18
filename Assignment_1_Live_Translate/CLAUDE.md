@@ -38,7 +38,11 @@ caught that way and would otherwise have cost points.
 **Outstanding, in order:**
 1. ~~Run `smoke_llm.py` with a real key~~ **Done 2026-07-16.** Dutch quality validated (see `DECISIONS.md` §5.1). Note: `requirements.txt` needed an `httpx<0.28` pin to work with `anthropic==0.39.0` — see `DECISIONS.md` §5.7 before assuming a fresh install "just works".
 2. ~~`python benchmark/bench.py`~~ **Done 2026-07-16.** Exit 0, all 5 SLAs passed (hit p95 11.8ms, miss p95 1923ms, hit rate 75.0%, error rate 0.0%, throughput 1471.6 req/s). Single-flight (D15) confirmed not needed — see `DECISIONS.md`. Node.js wasn't installed on this machine; installed via `nvm` (LTS, v24.18.0) to run the gateway for the end-to-end run.
-3. **Fly.io deploy** — both services; point the extension popup at the public gateway.
+3. ~~Fly.io deploy~~ **Done 2026-07-18.** Both services live on Fly.io (`iad` region, personal org):
+   - AI service: https://live-translate-ai-pananthg.fly.dev (Dockerfile + `fly.toml` added; 1GB volume mounted at `/data` for `translations.db`, `ANTHROPIC_API_KEY` set as a Fly secret)
+   - Gateway: https://live-translate-gateway-pananthg.fly.dev (Dockerfile + `fly.toml` added; `AI_SERVICE_URL` env points at the AI service's public URL)
+   - Verified: public `/health` on both, end-to-end `/translate` (miss then cached hit), and **cache survives a real machine restart** (`flyctl machines restart` → `cacheSize:1`, still `cached:true`).
+   - **Still needed:** open the unpacked extension in a browser, open the popup, and set the backend URL field to `https://live-translate-gateway-pananthg.fly.dev` (this is a UI action in `popup.js`'s `chrome.storage.sync` — not a code edit, so it doesn't violate the "don't touch `extension/`" rule).
 4. **`PRODUCT_EVAL.md`** + 60–90s video demo.
 
 ---
