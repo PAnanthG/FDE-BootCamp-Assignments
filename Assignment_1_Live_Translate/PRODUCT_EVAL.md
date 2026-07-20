@@ -2,7 +2,7 @@
 
 - **Student:** Praveen Ananth
 - **Date:** 2026-07-18
-- **Video demo:** _(not yet recorded — to be added before final submission)_
+- **Video demo: https://youtu.be/B2f6kSNb3BI
 - **LLM provider / model:** Anthropic, `claude-sonnet-4-6`
 - **Backend target (local rubric run):** `http://localhost:8787`
 - **Deployed gateway:** `https://live-translate-gateway-pananthg.fly.dev`
