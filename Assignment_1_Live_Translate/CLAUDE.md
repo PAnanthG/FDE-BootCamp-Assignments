@@ -42,8 +42,8 @@ caught that way and would otherwise have cost points.
    - AI service: https://live-translate-ai-pananthg.fly.dev (Dockerfile + `fly.toml` added; 1GB volume mounted at `/data` for `translations.db`, `ANTHROPIC_API_KEY` set as a Fly secret)
    - Gateway: https://live-translate-gateway-pananthg.fly.dev (Dockerfile + `fly.toml` added; `AI_SERVICE_URL` env points at the AI service's public URL)
    - Verified: public `/health` on both, end-to-end `/translate` (miss then cached hit), and **cache survives a real machine restart** (`flyctl machines restart` → `cacheSize:1`, still `cached:true`).
-   - **Still needed:** open the unpacked extension in a browser, open the popup, and set the backend URL field to `https://live-translate-gateway-pananthg.fly.dev` (this is a UI action in `popup.js`'s `chrome.storage.sync` — not a code edit, so it doesn't violate the "don't touch `extension/`" rule).
-4. **`PRODUCT_EVAL.md`** + 60–90s video demo.
+   - **Superseded:** setting the popup's backend URL does *not* actually work — see D22 in `DECISIONS.md`, a race condition in the provided `extension/content.js` + `translation-widget.js` that always falls back to `localhost:8787` regardless of what's saved. Confirmed with real evidence on homedepot.com. Use the console-loader path (`loader/console-snippet.js` + `window.FDE_CONFIG`) instead when testing against the deployed gateway.
+4. ~~`PRODUCT_EVAL.md`~~ **Done 2026-07-19.** Written at `Assignment_1_Live_Translate/PRODUCT_EVAL.md`, validated against `eval/rubric.json` + `AGENTS.md`'s Definition of Done, committed and pushed. **Video demo (60–90s) still outstanding** — the student is recording and adding the link manually; the report's "Video demo" field is left as an explicit placeholder for that.
 
 ---
 
