@@ -1,0 +1,45 @@
+Real-microphone session, captured live by the user (not scripted), via:
+
+    cd pipeline && source ../.venv/bin/activate && python voice_loop.py
+
+PROVIDER=openai, TTS_BACKEND=system, ENDPOINT_SILENCE_MS=600 (default). Session cli-6750698861.
+Corresponding structured telemetry: 04_real_mic_telemetry.jsonl (3 turns).
+
+you> I'd like to book a room.
+agent> Sure! Could you please provide me with your check-in date, check-out date, and the number of guests? If you have a room type preference, let me know that as well.
+  turn telemetry
+    capture        11238 ms
+    stt             1678 ms
+    routing            0 ms
+    llm             1122 ms
+    tts            10370 ms
+    TOTAL          24412 ms
+    language     en
+
+  (listening: speak, then pause)
+you> Could you speak in Spanish?
+agent> ¡Claro! Por favor, indícame la fecha de check-in, la fecha de check-out y el número de huéspedes. Si tienes una preferencia de tipo de habitación, también házmelo saber.
+  turn telemetry
+    capture         9222 ms
+    stt              965 ms
+    routing            0 ms
+    llm             2050 ms
+    tools              0 ms
+    tts             9629 ms
+    TOTAL          21869 ms
+    language     es
+
+  (listening: speak, then pause)
+you> Stop, end call.
+agent> Gracias por llamar. ¡Que tengas un buen día!
+  turn telemetry
+    capture         8955 ms
+    stt             1480 ms
+    routing            0 ms
+    llm             1672 ms
+    tools              0 ms
+    tts             2750 ms
+    TOTAL          14859 ms
+    language     es
+
+[call ended: SIP BYE]

@@ -1,0 +1,111 @@
+Provider: openai | LLM: gpt-4o-mini
+Call started. Say/type 'goodbye' or Ctrl-C to hang up.
+
+agent> Thanks for calling. This is Aurora — how can I help with your reservation?
+you> agent> We have the following available rooms for your stay from August 12 to August 14: Standard Queen at $189 per night, Deluxe King at $229 per night, Harbor Suite at $329 per night, Family Double Queen at $269 per night, and Accessible Queen at $199 per night. Which one would you like to book?
+  turn telemetry
+    routing            0 ms
+    llm             3654 ms
+    tools              0 ms
+    tts            23948 ms
+    TOTAL          27604 ms
+    language     en
+
+you> agent> Which room option would you like to book for Priya Shah? The available options are Standard Queen, Deluxe King, Harbor Suite, Family Double Queen, and Accessible Queen.
+  turn telemetry
+    routing            0 ms
+    llm              866 ms
+    tts            10487 ms
+    TOTAL          11355 ms
+    language     en
+
+you> agent> I'm here to help with hotel reservations only. Would you like to book, change, or cancel a stay?
+  turn telemetry
+    routing            0 ms
+    llm              742 ms
+    tts             6781 ms
+    TOTAL           7524 ms
+    language     en
+
+you> agent> I can only assist with hotel reservations. Would you like to book, change, or cancel a stay?
+  turn telemetry
+    routing            0 ms
+    llm              908 ms
+    tts             6599 ms
+    TOTAL           7508 ms
+    language     en
+
+you> agent> You can cancel your reservation without charge until 6:00 PM local hotel time two days before arrival. After that, there's a charge of one night plus applicable tax, and prepaid promotional rates are non-refundable. Now, would you like to proceed with booking a room?
+  turn telemetry
+    routing            0 ms
+    retrieval          0 ms
+    llm             1652 ms
+    tools              0 ms
+    tts            17345 ms
+    TOTAL          18998 ms
+    language     en
+
+you> agent> Claro, puedo hablar en español. ¿Te gustaría proceder con la reserva de una habitación?
+  turn telemetry
+    routing            0 ms
+    llm             1733 ms
+    tools              0 ms
+    tts             5074 ms
+    TOTAL           6809 ms
+    language     es
+
+you> agent> Ya tenemos las fechas de tu estancia, del 12 al 14 de agosto, y son dos personas. ¿Qué tipo de habitación prefieres: Standard Queen, Deluxe King, Harbor Suite, Family Double Queen o Accessible Queen?
+  turn telemetry
+    routing            0 ms
+    llm             1290 ms
+    tts            12571 ms
+    TOTAL          13862 ms
+    language     es
+
+you> agent> El hotel Aurora acepta hasta dos perros por habitación, cada uno con un peso máximo de 50 libras. Se aplica una tarifa de limpieza no reembolsable de $75 por estancia. Los animales de servicio están exentos de esta tarifa. Ahora, ¿te gustaría proceder con la reserva de una habitación?
+  turn telemetry
+    routing            0 ms
+    retrieval          0 ms
+    llm             1697 ms
+    tools              0 ms
+    tts            16586 ms
+    TOTAL          18284 ms
+    language     es
+
+you> agent> I'm back to English now. Would you like to proceed with booking a room for your stay from August 12 to August 14?
+  turn telemetry
+    routing            0 ms
+    llm             2114 ms
+    tools              0 ms
+    tts             7872 ms
+    TOTAL           9987 ms
+    language     en
+
+you> agent> I can only assist with hotel reservations. Would you like to book, change, or cancel a stay?
+  turn telemetry
+    routing            0 ms
+    llm              663 ms
+    tts             6588 ms
+    TOTAL           7253 ms
+    language     en
+
+you> agent> Check-in begins at 3:00 PM, and standard check-out is at 11:00 AM. Now, would you like to proceed with booking a room for your stay?
+  turn telemetry
+    routing            0 ms
+    retrieval          0 ms
+    llm             1477 ms
+    tools              0 ms
+    tts             9146 ms
+    TOTAL          10625 ms
+    language     en
+
+you> agent> Goodbye! If you need assistance in the future, feel free to reach out.
+  turn telemetry
+    routing            0 ms
+    llm             1674 ms
+    tools              0 ms
+    tts             5654 ms
+    TOTAL           7328 ms
+    language     en
+
+[call ended: SIP BYE]

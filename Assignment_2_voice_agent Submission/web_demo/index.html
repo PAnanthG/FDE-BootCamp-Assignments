@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Aurora - Web Demo</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    max-width: 640px; margin: 2rem auto; padding: 0 1rem;
+  }
+  h1 { font-size: 1.25rem; margin-bottom: 0.1rem; }
+  .subtitle { color: #888; font-size: 0.85rem; margin-bottom: 1rem; }
+  #chat {
+    border: 1px solid #8883; border-radius: 10px; padding: 1rem;
+    height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.6rem;
+    background: #80808008;
+  }
+  .bubble { max-width: 80%; padding: 0.55rem 0.8rem; border-radius: 12px; line-height: 1.35; }
+  .you { align-self: flex-end; background: #2f6fed; color: white; }
+  .aurora { align-self: flex-start; background: #8883; }
+  .meta { align-self: flex-start; font-size: 0.72rem; color: #888; margin-top: -0.35rem; }
+  .system { align-self: center; font-size: 0.8rem; color: #b8860b; text-align: center; }
+  #controls { display: flex; align-items: center; gap: 0.75rem; margin-top: 1rem; }
+  #micBtn {
+    font-size: 1rem; padding: 0.7rem 1.3rem; border-radius: 999px; border: none;
+    cursor: pointer; background: #2f6fed; color: white;
+  }
+  #micBtn.recording { background: #e5484d; }
+  #micBtn:disabled { background: #999; cursor: not-allowed; }
+  #status { font-size: 0.85rem; color: #888; flex: 1; }
+  #resetBtn { font-size: 0.85rem; padding: 0.5rem 0.9rem; border-radius: 8px; border: 1px solid #8888; background: none; cursor: pointer; }
+  #note { font-size: 0.78rem; color: #888; margin-top: 0.8rem; }
+  .badge { display: inline-block; font-size: 0.7rem; border: 1px solid #8888; border-radius: 6px; padding: 0 0.35rem; margin-left: 0.4rem; }
+</style>
+</head>
+<body>
+  <h1>Aurora <span class="badge" id="langBadge">en</span></h1>
+  <div class="subtitle">Dummy web front end &middot; browser mic &rarr; Whisper STT &rarr; Aurora agent &rarr; spoken reply on this computer's speakers</div>
+
+  <div id="chat"></div>
+
+  <div id="controls">
+    <button id="micBtn">Start recording</button>
+    <span id="status">Click "Start recording", speak, then click "Stop &amp; send".</span>
+    <button id="resetBtn">New call</button>
+  </div>
+
+  <div id="note">
+    Aurora's spoken reply plays through <em>this computer's</em> speakers (server-side TTS,
+    same as the pipeline's --text mode) &mdash; it is not streamed to the browser as audio.
+    If you don't hear anything, check this Mac's volume.
+  </div>
+
+<script>
+const chat = document.getElementById('chat');
+const micBtn = document.getElementById('micBtn');
+const resetBtn = document.getElementById('resetBtn');
+const status = document.getElementById('status');
+const langBadge = document.getElementById('langBadge');
+
+let mediaRecorder = null;
+let chunks = [];
+let recording = false;
+let ended = false;
+
+function addBubble(cls, text) {
+  const div = document.createElement('div');
+  div.className = 'bubble ' + cls;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  return div;
+}
+
+function addMeta(text) {
+  const div = document.createElement('div');
+  div.className = 'meta';
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function addSystem(text) {
+  const div = document.createElement('div');
+  div.className = 'system';
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function pickMimeType() {
+  const candidates = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4'];
+  for (const c of candidates) {
+    if (window.MediaRecorder && MediaRecorder.isTypeSupported(c)) return c;
+  }
+  return '';
+}
+
+async function startRecording() {
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  const mimeType = pickMimeType();
+  mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+  chunks = [];
+  mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
+  mediaRecorder.onstop = onRecordingStopped;
+  mediaRecorder.start();
+  recording = true;
+  micBtn.textContent = 'Stop & send';
+  micBtn.classList.add('recording');
+  status.textContent = 'Listening... click "Stop & send" when you are done speaking.';
+}
+
+function stopRecording() {
+  if (mediaRecorder && recording) {
+    mediaRecorder.stop();
+  }
+  recording = false;
+  micBtn.classList.remove('recording');
+}
+
+function resetMicButton() {
+  micBtn.disabled = false;
+  micBtn.textContent = 'Start recording';
+}
+
+async function onRecordingStopped() {
+  // Stop the underlying tracks only now, after the recorder has had its
+  // chance to flush the final chunk -- stopping them right after
+  // mediaRecorder.stop() risked cutting the flush short on some browsers.
+  mediaRecorder.stream.getTracks().forEach((t) => t.stop());
+
+  const mimeType = mediaRecorder.mimeType || 'audio/webm';
+  const blob = new Blob(chunks, { type: mimeType });
+  micBtn.disabled = true;
+  status.textContent = 'Transcribing and thinking...';
+  const thinking = addSystem('Aurora is thinking...');
+
+  try {
+    const resp = await fetch('/turn', {
+      method: 'POST',
+      headers: { 'Content-Type': mimeType },
+      body: blob,
+    });
+    status.textContent = 'Aurora is speaking (check this computer\'s speakers)...';
+    const data = await resp.json();
+    if (thinking) thinking.remove();
+
+    if (resp.status === 409) {
+      // Server already considers the call over (e.g. a previous turn ended
+      // it and the page was reloaded instead of "New call"). Sync up instead
+      // of erroring.
+      addSystem('[call already ended on the server -- syncing up]');
+      endCall();
+      return;
+    }
+
+    if (!resp.ok) {
+      addSystem('Error: ' + (data.error || 'request failed'));
+      status.textContent = data.hint || 'Something went wrong -- see server terminal.';
+      resetMicButton();
+      return;
+    }
+
+    if (data.you) addBubble('you', data.you);
+    addBubble('aurora', data.reply);
+    if (data.language) langBadge.textContent = data.language;
+    if (data.sources && data.sources.length) addMeta('sources: ' + data.sources.join(', '));
+    if (data.totalMs) addMeta('turn latency: ' + Math.round(data.totalMs) + ' ms');
+
+    if (data.action === 'transfer') {
+      addSystem('[transferring to front desk]');
+      endCall();
+    } else if (data.action === 'hangup') {
+      addSystem('[call ended]');
+      endCall();
+    } else {
+      resetMicButton();
+      status.textContent = 'Click "Start recording" to speak again.';
+    }
+  } catch (err) {
+    if (thinking) thinking.remove();
+    addSystem('Network error: ' + err.message);
+    resetMicButton();
+  }
+}
+
+window.addEventListener('error', (e) => {
+  addSystem('JS error: ' + e.message);
+  if (!ended) resetMicButton();
+});
+window.addEventListener('unhandledrejection', (e) => {
+  addSystem('JS error: ' + (e.reason && e.reason.message ? e.reason.message : e.reason));
+  if (!ended) resetMicButton();
+});
+
+function endCall() {
+  ended = true;
+  micBtn.disabled = true;
+  status.textContent = 'Call ended. Click "New call" to start again.';
+}
+
+micBtn.addEventListener('click', () => {
+  if (ended) return;
+  if (!recording) startRecording().catch((err) => {
+    status.textContent = 'Microphone error: ' + err.message;
+  });
+  else stopRecording();
+});
+
+async function playGreeting() {
+  try {
+    const resp = await fetch('/greeting', { method: 'POST' });
+    const data = await resp.json();
+    addSystem(data.greeting || 'Thanks for calling. This is Aurora - how can I help with your reservation?');
+  } catch (err) {
+    addSystem('Thanks for calling. This is Aurora - how can I help with your reservation?');
+    addSystem('(greeting audio failed: ' + err.message + ')');
+  }
+}
+
+resetBtn.addEventListener('click', async () => {
+  await fetch('/reset', { method: 'POST' });
+  chat.innerHTML = '';
+  ended = false;
+  micBtn.disabled = false;
+  micBtn.textContent = 'Start recording';
+  langBadge.textContent = 'en';
+  status.textContent = 'New call started. Click "Start recording" to speak.';
+  playGreeting();
+});
+
+playGreeting();
+</script>
+</body>
+</html>

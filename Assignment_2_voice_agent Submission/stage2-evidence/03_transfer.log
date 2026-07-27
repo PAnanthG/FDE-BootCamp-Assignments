@@ -1,0 +1,14 @@
+Provider: openai | LLM: gpt-4o-mini
+Call started. Say/type 'goodbye' or Ctrl-C to hang up.
+
+agent> Thanks for calling. This is Aurora — how can I help with your reservation?
+you> agent> I'm transferring you to a human agent now. Thank you!
+  turn telemetry
+    routing            0 ms
+    llm             2092 ms
+    tools              0 ms
+    tts             4489 ms
+    TOTAL           6583 ms
+    language     en
+
+[call ended: SIP BYE]
