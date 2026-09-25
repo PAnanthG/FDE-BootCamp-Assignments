@@ -1,0 +1,50 @@
+# Build context hygiene. Without this the context is 535M, of which 529M is
+# .venv - uploaded to the builder on EVERY deploy, for files the image never
+# uses (the image installs its own deps from requirements.txt).
+
+# Local virtualenv - the single biggest offender.
+.venv/
+venv/
+env/
+
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Secrets must reach Fly via `fly secrets`, NEVER baked into an image layer.
+# .env is already untracked (guard.sh checks); this stops it entering the image
+# even so, because anyone who can pull the image can read its layers.
+.env
+.env.*
+*.pem
+*.key
+
+# Local dev state and sample media - the deployed app reads from Qdrant Cloud,
+# Neon and object storage, not from these.
+data/
+*.pdf
+*.mp4
+*.mkv
+*.webm
+
+# Benchmark + eval artifacts (evidence for the writeup, not runtime inputs)
+benchmark/_*.json
+eval/REPORT.md
+
+# VCS / editor / OS
+.git/
+.gitignore
+.github/
+.vscode/
+.idea/
+.DS_Store
+
+# Docs and tests aren't needed at runtime. Tests run in CI/locally, not in the
+# serving image.
+tests/
+*.md
+!README.md

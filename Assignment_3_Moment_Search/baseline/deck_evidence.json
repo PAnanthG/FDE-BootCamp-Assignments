@@ -1,0 +1,213 @@
+{
+  "_what": "Stage 4 evidence: deck retrieval on NATURAL queries, replacing the eval's synthetic probe (see DECISIONS.md).",
+  "queries": [
+    {
+      "q": "what is a vector database",
+      "abstained": false,
+      "kinds": {
+        "deck": 6
+      },
+      "deck_citations": [
+        {
+          "source_id": "dk_d0b5771f407d",
+          "title": "Cornell CS4414 Lecture 24: Vector Databases",
+          "slide": 24,
+          "text": "VECTOR DATABASES PROVIDE THE DOCUMENT\nRETRIEVAL FUNCTIONALITY\nA vector database is a form of database designed specifically to deal with this\ncategory of somewh",
+          "deeplink": "https://www.cs.cornell.edu/courses/cs4414/2025fa/Slides/24-Vector%20Databases.pdf#page=24"
+        },
+        {
+          "source_id": "dk_4a2776c2aee9",
+          "title": "Utah CS6530 Lecture 20: Vector Databases",
+          "slide": 2,
+          "text": "Vector databases\n\u2022 Specialized databases designed to store, index, and retrieve highdimensional vectors efficiently\n\u2022 Particularly useful for tasks like similar",
+          "deeplink": "https://users.cs.utah.edu/~pandey/courses/cs6530/fall24/slides/Lecture20.pdf#page=2"
+        },
+        {
+          "source_id": "dk_4a2776c2aee9",
+          "title": "Utah CS6530 Lecture 20: Vector Databases",
+          "slide": 1,
+          "text": "Lecture 20\nVector Databases\nPrashant Pandey\nprashant.pandey@utah.edu\nCS 6530: Advanced Database Systems Fall 2024",
+          "deeplink": "https://users.cs.utah.edu/~pandey/courses/cs6530/fall24/slides/Lecture20.pdf#page=1"
+        },
+        {
+          "source_id": "dk_d0b5771f407d",
+          "title": "Cornell CS4414 Lecture 24: Vector Databases",
+          "slide": 3,
+          "text": "ROLE OF A VECTOR DATABASE\nUsed to store data, usually some form of \u201cdocument id\u201d (the document itself is\noften in a separate KVS or file system)\nEnables search ",
+          "deeplink": "https://www.cs.cornell.edu/courses/cs4414/2025fa/Slides/24-Vector%20Databases.pdf#page=3"
+        },
+        {
+          "source_id": "dk_4a2776c2aee9",
+          "title": "Utah CS6530 Lecture 20: Vector Databases",
+          "slide": 25,
+          "text": "Parting thoughts\n\u2022 Vector databases are hot and underlie modern ML-based platforms\n\u2022 There are still a bunch of open research questions regarding\n\u2022 Most efficie",
+          "deeplink": "https://users.cs.utah.edu/~pandey/courses/cs6530/fall24/slides/Lecture20.pdf#page=25"
+        },
+        {
+          "source_id": "dk_d0b5771f407d",
+          "title": "Cornell CS4414 Lecture 24: Vector Databases",
+          "slide": 1,
+          "text": "VECTOR DATABASES\nCS4414/CS5416\nLecture 24\nHTTP://WWW.CS.CORNELL.EDU/COURSES/CS5412/2025FA\n1",
+          "deeplink": "https://www.cs.cornell.edu/courses/cs4414/2025fa/Slides/24-Vector%20Databases.pdf#page=1"
+        }
+      ]
+    },
+    {
+      "q": "how does HNSW graph indexing work",
+      "abstained": false,
+      "kinds": {
+        "deck": 5,
+        "paper": 1
+      },
+      "deck_citations": [
+        {
+          "source_id": "dk_d0b5771f407d",
+          "title": "Cornell CS4414 Lecture 24: Vector Databases",
+          "slide": 38,
+          "text": "HNSW INDEXING\nHierarchical Navigable Small World, or HNSW\nis used for in-memory indexing. Nodes are embeddings\nand directed edges connect the \u201cneighborhood\u201d\nHNS",
+          "deeplink": "https://www.cs.cornell.edu/courses/cs4414/2025fa/Slides/24-Vector%20Databases.pdf#page=38"
+        },
+        {
+          "source_id": "dk_4a2776c2aee9",
+          "title": "Utah CS6530 Lecture 20: Vector Databases",
+          "slide": 14,
+          "text": "Nearest neighbor search\nThe slide titled \"Nearest neighbor search\" discusses the concept of Hierarchical Navigable Small World Graphs (HNSW) in the context of v",
+          "deeplink": "https://users.cs.utah.edu/~pandey/courses/cs6530/fall24/slides/Lecture20.pdf#page=14"
+        },
+        {
+          "source_id": "dk_d0b5771f407d",
+          "title": "Cornell CS4414 Lecture 24: Vector Databases",
+          "slide": 40,
+          "text": "HNSW IS POPULAR! Easily half the products for RAG database search use it\nBut it has a limitation if a graph has a LOT of embeddings, like billions: it\ntends to ",
+          "deeplink": "https://www.cs.cornell.edu/courses/cs4414/2025fa/Slides/24-Vector%20Databases.pdf#page=40"
+        },
+        {
+          "source_id": "dk_4a2776c2aee9",
+          "title": "Utah CS6530 Lecture 20: Vector Databases",
+          "slide": 4,
+          "text": "Graph-based vector databases\n\u2022 Utilize graph structures (e.g., k-NN graphs, HNSW) for efficient\nsimilarity search\n\u2022 These are well-suited for large-scale datase",
+          "deeplink": "https://users.cs.utah.edu/~pandey/courses/cs6530/fall24/slides/Lecture20.pdf#page=4"
+        },
+        {
+          "source_id": "dk_d0b5771f407d",
+          "title": "Cornell CS4414 Lecture 24: Vector Databases",
+          "slide": 39,
+          "text": "WHAT DOES THE ILLUSTRATION SHOW? We think of HNSW in layers\nA layer is defined by \u201cdistance of paths to our target area.\u201d Layer k has nodes\n(embeddings) that ar",
+          "deeplink": "https://www.cs.cornell.edu/courses/cs4414/2025fa/Slides/24-Vector%20Databases.pdf#page=39"
+        }
+      ]
+    },
+    {
+      "q": "what is approximate nearest neighbour search",
+      "abstained": false,
+      "kinds": {
+        "deck": 6
+      },
+      "deck_citations": [
+        {
+          "source_id": "dk_4a2776c2aee9",
+          "title": "Utah CS6530 Lecture 20: Vector Databases",
+          "slide": 13,
+          "text": "Nearest neighbor search\nThe slide titled \"Nearest neighbor search\" introduces a new strategy called Greedy Graph Search. It outlines a two-step process for buil",
+          "deeplink": "https://users.cs.utah.edu/~pandey/courses/cs6530/fall24/slides/Lecture20.pdf#page=13"
+        },
+        {
+          "source_id": "dk_4a2776c2aee9",
+          "title": "Utah CS6530 Lecture 20: Vector Databases",
+          "slide": 14,
+          "text": "Nearest neighbor search\nThe slide titled \"Nearest neighbor search\" discusses the concept of Hierarchical Navigable Small World Graphs (HNSW) in the context of v",
+          "deeplink": "https://users.cs.utah.edu/~pandey/courses/cs6530/fall24/slides/Lecture20.pdf#page=14"
+        },
+        {
+          "source_id": "dk_d0b5771f407d",
+          "title": "Cornell CS4414 Lecture 24: Vector Databases",
+          "slide": 35,
+          "text": "IMPLEMENTING A VECTOR DATABASE\nPrecompute an index to make it fast to carry out these kinds of searches. Then offer a search API: Given a query, it returns the ",
+          "deeplink": "https://www.cs.cornell.edu/courses/cs4414/2025fa/Slides/24-Vector%20Databases.pdf#page=35"
+        },
+        {
+          "source_id": "dk_4a2776c2aee9",
+          "title": "Utah CS6530 Lecture 20: Vector Databases",
+          "slide": 12,
+          "text": "Nearest neighbor search\nThe slide titled \"Nearest neighbor search\" outlines the process for finding the nearest neighbor in a dataset. It defines the problem by",
+          "deeplink": "https://users.cs.utah.edu/~pandey/courses/cs6530/fall24/slides/Lecture20.pdf#page=12"
+        },
+        {
+          "source_id": "dk_4a2776c2aee9",
+          "title": "Utah CS6530 Lecture 20: Vector Databases",
+          "slide": 15,
+          "text": "RAG implementation\nThe slide titled \"RAG implementation\" presents information about FAISS (Facebook AI Similarity Search). It includes the formula for finding t",
+          "deeplink": "https://users.cs.utah.edu/~pandey/courses/cs6530/fall24/slides/Lecture20.pdf#page=15"
+        },
+        {
+          "source_id": "dk_4a2776c2aee9",
+          "title": "Utah CS6530 Lecture 20: Vector Databases",
+          "slide": 5,
+          "text": "Hash-based vector databases\n\u2022 Use hashing techniques like Locality-Sensitive Hashing (LSH) for fast\napproximate searches\n\u2022 Suitable for sparse or low-dimensiona",
+          "deeplink": "https://users.cs.utah.edu/~pandey/courses/cs6530/fall24/slides/Lecture20.pdf#page=5"
+        }
+      ]
+    },
+    {
+      "q": "what is word2vec and how is it trained",
+      "abstained": false,
+      "kinds": {
+        "deck": 5,
+        "paper": 1
+      },
+      "deck_citations": [
+        {
+          "source_id": "dk_e9092d4145fd",
+          "title": "CS224n Lecture 1: Introduction and Word Vectors",
+          "slide": 25,
+          "text": "3. Word2vec: Overview\nWord2vec is a framework for learning word vectors\n(Mikolov et al. 2013)\nIdea:\n\u2022 We have a large corpus (\u201cbody\u201d) of text: a long list of wo",
+          "deeplink": "https://web.stanford.edu/class/cs224n/slides/cs224n-spr2024-lecture01-wordvecs1.pdf#page=25"
+        },
+        {
+          "source_id": "dk_e9092d4145fd",
+          "title": "CS224n Lecture 1: Introduction and Word Vectors",
+          "slide": 40,
+          "text": "Lecture Plan\n1. The course (10 mins)\n2. Human language and word meaning (15 mins)\n3. Word2vec introduction (15 mins)\n4. Word2vec objective function gradients (2",
+          "deeplink": "https://web.stanford.edu/class/cs224n/slides/cs224n-spr2024-lecture01-wordvecs1.pdf#page=40"
+        },
+        {
+          "source_id": "dk_e9092d4145fd",
+          "title": "CS224n Lecture 1: Introduction and Word Vectors",
+          "slide": 9,
+          "text": "Lecture Plan\n1. The course (10 mins)\n2. Human language and word meaning (15 mins)\n3. Word2vec introduction (15 mins)\n4. Word2vec objective function gradients (2",
+          "deeplink": "https://web.stanford.edu/class/cs224n/slides/cs224n-spr2024-lecture01-wordvecs1.pdf#page=9"
+        },
+        {
+          "source_id": "dk_e9092d4145fd",
+          "title": "CS224n Lecture 1: Introduction and Word Vectors",
+          "slide": 2,
+          "text": "Lecture Plan\nLecture 1: Introduction and Word Vectors\n1. The course (10 mins)\n2. Human language and word meaning (15 mins)\n3. Word2vec introduction (15 mins)\n4.",
+          "deeplink": "https://web.stanford.edu/class/cs224n/slides/cs224n-spr2024-lecture01-wordvecs1.pdf#page=2"
+        },
+        {
+          "source_id": "dk_e9092d4145fd",
+          "title": "CS224n Lecture 1: Introduction and Word Vectors",
+          "slide": 27,
+          "text": "Word2Vec Overview\nExample windows and process for computing \ud835\udc43\ud835\udc64!\"# | \ud835\udc64! \u2026\ncrises\nbanking\ninto\nturning\nproblems\n\u2026\nas\ncenter word\nat position t\noutside context wor",
+          "deeplink": "https://web.stanford.edu/class/cs224n/slides/cs224n-spr2024-lecture01-wordvecs1.pdf#page=27"
+        }
+      ]
+    },
+    {
+      "q": "a photograph of a library full of bookshelves",
+      "abstained": false,
+      "kinds": {
+        "deck": 1
+      },
+      "deck_citations": [
+        {
+          "source_id": "dk_e9092d4145fd",
+          "title": "CS224n Lecture 1: Introduction and Word Vectors",
+          "slide": 10,
+          "text": "The slide depicts a grand library interior, showcasing tall bookshelves filled with books on either side and a central display case. The architecture features h",
+          "deeplink": "https://web.stanford.edu/class/cs224n/slides/cs224n-spr2024-lecture01-wordvecs1.pdf#page=10"
+        }
+      ]
+    }
+  ]
+}

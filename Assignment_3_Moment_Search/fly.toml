@@ -1,0 +1,117 @@
+# Fly.io — one image, two process groups (same pattern as digital-twin-akash):
+#   api    — stateless, always-startable, auto-stops when idle
+#   worker — polls Prefect Cloud for ingest runs (outbound only, no ports)
+#
+# Bucket: `fly storage create` provisions Tigris and injects the AWS_* secrets
+# automatically — then just `fly secrets set STORAGE_PROVIDER=flyio`.
+#
+# fly launch --no-deploy --copy-config
+# Get-Content .env | Where-Object { $_ -match '^[A-Z_]+=.+' -and $_ -notmatch '^FLY_' } | fly secrets import
+# fly deploy --ha=false
+# fly scale count worker=2        # more ingest throughput, anytime
+
+# NAME MUST MATCH the .internal addresses in [env] below - Fly's private DNS is
+# <process>.process.<APP>.internal, so renaming the app without editing those
+# leaves api/worker unable to reach clip or docembed (and they will retry for
+# ~60s and then fail the flow, not crash loudly).
+app = 'momentsearch-fde3'
+
+# fra, not iad: Neon (DATABASE_URL) and Qdrant Cloud (QDRANT_URL) are BOTH in
+# eu-central-1. Search makes several round trips to each, so running compute in
+# Virginia would add ~90-100ms per call, transatlantic, to the exact metric this
+# project has spent its time defending (D12). Co-locate with the data.
+primary_region = 'fra'
+
+[build]
+
+[deploy]
+  # Startup gate: index the four sample talks BEFORE the new version goes live —
+  # if it can't, the deploy aborts and the old version keeps serving, so users
+  # never hit a half-indexed app. Runs in a temporary machine where the clip
+  # service isn't up yet, so CLIP_SERVICE_URL= forces in-process embedding.
+  # Idempotent + durable (Qdrant Cloud): real work happens only on first deploy.
+  release_command = "sh -c 'CLIP_SERVICE_URL= python -m src.seed'"
+
+[processes]
+  api = 'uvicorn src.app:app --host 0.0.0.0 --port 8000'
+  worker = 'python -m src.worker'
+  # Must bind IPv6 (::) — Fly private networking (*.internal, used by
+  # CLIP_SERVICE_URL) is IPv6-only; 0.0.0.0 would be unreachable internally.
+  clip = 'uvicorn src.clip_service:app --host :: --port 8001'
+  # Bulk document embedding. A SEPARATE machine from clip for the same reason
+  # it is a separate container locally: clip answers query encodes while a user
+  # waits, and a bulk chunk batch sharing that process blocked them for 8.5s.
+  # Omitting this on Fly is not neutral - DOC_EMBED_SERVICE_URL would be unset,
+  # embed_docs() would silently fall back to the clip service
+  # (rag/embeddings.py), and clip's 2gb machine would meet a batch measured at
+  # 2.9 GiB. Same IPv6 bind requirement as clip.
+  docembed = 'uvicorn src.embed_service:app --host :: --port 8002'
+
+[env]
+  # Fly private networking: <process>.process.<app>.internal resolves to the
+  # clip machine. api + worker send embed batches there (one warm model);
+  # clip_service itself ignores this and always runs the model locally.
+  CLIP_SERVICE_URL = 'http://clip.process.momentsearch-fde3.internal:8001'
+  DOC_EMBED_SERVICE_URL = 'http://docembed.process.momentsearch-fde3.internal:8002'
+  # DOC_EMBED_SERVICE_THREADS defaults to (cpu_count - 4), which on a 2-vCPU
+  # Fly machine evaluates to 1 and makes ingest needlessly slow. Set it
+  # explicitly to the machine's actual width.
+  DOC_EMBED_SERVICE_THREADS = '2'
+  EMBED_SERVICE_THREADS = '2'
+
+# Infra backstop: if a machine's process ever exits (crash, OOM, a dependency
+# outage that slips past the code's own retry loop), always bring it back —
+# don't leave it stopped. The worker's serve() also self-heals in code
+# (src/worker.py); this is defense in depth so a fresh clone survives blips.
+[[restart]]
+  policy = 'always'
+  retries = 10
+  processes = ['worker', 'clip', 'docembed']
+
+# api restarts only on failure — so its money-saving idle auto-stop isn't
+# undone by the restart policy.
+[[restart]]
+  policy = 'on-failure'
+  retries = 10
+  processes = ['api']
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['api']
+
+[[vm]]
+  size = 'shared-cpu-1x'
+  # Measured 377 MiB locally under search load. 512mb left almost no headroom
+  # and an OOM here takes the public UI down, so 1gb - this machine auto-stops
+  # when idle, so the extra costs little.
+  memory = '1gb'
+  processes = ['api']
+
+[[vm]]
+  size = 'shared-cpu-2x'
+  # Runs are light now (download + ffmpeg; embedding is remote) — 2gb fits
+  # WORKER_CONCURRENCY=2. Scale workers horizontally, not vertically.
+  memory = '2gb'
+  processes = ['worker']
+
+[[vm]]
+  size = 'shared-cpu-2x'
+  memory = '2gb'          # the one warm CLIP model (measured 641 MiB resident)
+  processes = ['clip']
+
+[[vm]]
+  size = 'shared-cpu-2x'
+  # 4gb because ONNXRuntime's arena grows to the largest batch it ever sees and
+  # never returns it: a full unfragmented batch measured 2.9 GiB (D12), and
+  # DOC_EMBED_MAX_BATCH_TOKENS is deliberately set NOT to fragment, because
+  # fragmenting it doubled search latency. mem_limit 4g locally, same here.
+  #
+  # COST LEVER: this is the most expensive machine and it runs continuously.
+  # To halve it, set DOC_EMBED_MAX_BATCH_TOKENS=12000 as a Fly secret and drop
+  # this to 2gb - bounded at ~1.36 GiB, at the latency cost measured in D12.
+  memory = '4gb'
+  processes = ['docembed']

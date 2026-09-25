@@ -1,0 +1,21 @@
+# Layout for the PRODUCT_EVAL.pdf build. Pandoc metadata, consumed by the typst
+# writer's template.
+#
+#   pandoc PRODUCT_EVAL.md -o PRODUCT_EVAL.pdf --pdf-engine=typst \
+#     --metadata-file=scripts/pdf-layout.yaml
+#
+# Why typst and not LaTeX: the report's tables use check and cross marks, which
+# pdflatex cannot set without font surgery, and a TeX install is 100MB (BasicTeX)
+# to 4GB (MacTeX) against typst's ~30MB. Typst renders the marks and the tables
+# correctly out of the box.
+#
+# Why these values: pandoc's typst defaults produced a 16-page document for ~5
+# pages of content. Tightening the margins and dropping to 10pt gives 8 pages
+# with the tables still readable. `margin` MUST be a map - the template iterates
+# it as key/value pairs, so passing `-V margin:'(x: 1.6cm, y: 1.8cm)'` on the
+# command line fails with a typst syntax error.
+margin:
+  x: 1.6cm
+  y: 1.8cm
+fontsize: 10pt
+papersize: a4

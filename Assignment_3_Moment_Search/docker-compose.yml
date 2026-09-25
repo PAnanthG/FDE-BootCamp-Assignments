@@ -1,0 +1,125 @@
+# Local dev stack. Durable state lives in managed services from .env — Neon
+# (DATABASE_URL), object storage, Qdrant Cloud, Prefect Cloud for the work
+# queue — so every container here is stateless and disposable.
+#   docker compose up --build
+#   API + UI:        http://localhost:8000
+#   Run/queue view:  https://app.prefect.cloud -> Runs
+# Vector store is Qdrant Cloud via QDRANT_URL in .env. To run a local Qdrant
+# instead, add a qdrant service here and blank QDRANT_URL.
+services:
+  # The inference service: ONE warm CLIP model behind a URL. api + worker send
+  # batches here instead of each flow run paying a fresh ~15-30s model load.
+  # Scaling embedding = scaling THIS service (CPU here; same container on a
+  # GPU machine later — only CLIP_SERVICE_URL changes).
+  clip:
+    build: .
+    command: uvicorn src.clip_service:app --host 0.0.0.0 --port 8001
+    env_file: .env
+    environment:
+      # Bulk doc embedding now lives in `docembed`, so this service only does
+      # SHORT work: one query encode per search, plus video frame batches.
+      # Its budget is deliberately small, because clip + docembed run
+      # CONCURRENTLY whenever a search overlaps an ingest, and 6+6 threads on a
+      # 10-core box oversubscribes exactly like the bug this pattern already
+      # caused once. Keep (clip + docembed) under the core count.
+      OMP_NUM_THREADS: ${EMBED_SERVICE_THREADS:-3}
+      EMBED_SERVICE_THREADS: ${EMBED_SERVICE_THREADS:-3}
+    volumes:
+      - hf_cache:/root/.cache     # model weights cached across restarts
+    restart: unless-stopped
+
+  # Bulk document-chunk embedding. SEPARATE from clip on purpose: clip serves
+  # the search path (one short query encode while a user waits), this serves
+  # ingest (whole chunk batches). Sharing one process made a 64-chunk batch
+  # block query encodes for 8.5s. It also replaces the N per-flow-run copies of
+  # the bge model the worker used to hold — the memory ceiling that OOM-killed
+  # WORKER_CONCURRENCY=8. See src/embed_service.py.
+  docembed:
+    build: .
+    command: uvicorn src.embed_service:app --host 0.0.0.0 --port 8002
+    env_file: .env
+    environment:
+      DOC_EMBED_SERVICE_THREADS: ${DOC_EMBED_SERVICE_THREADS:-6}
+      OMP_NUM_THREADS: ${DOC_EMBED_SERVICE_THREADS:-6}
+    # Docker reserves nothing per container by default, so before this limit
+    # existed one service could - and did - grow to 5.5 GiB of a 7.75 GiB box
+    # (ONNXRuntime's arena never returns memory) while sitting idle at 0.2%
+    # CPU. That did NOT turn out to be what stalled search - see D12 - but it
+    # is what OOM-killed WORKER_CONCURRENCY=8, and it is indefensible on its
+    # own terms. Token-budgeted batching in embed_service.py caps the arena;
+    # this limit is the guardrail that keeps a regression loud and local (this
+    # container OOMs, restarts, and says so) rather than silent and box-wide.
+    # Sized above the ~2.9 GiB peak of a full-size unfragmented batch, because
+    # DOC_EMBED_MAX_BATCH_TOKENS is deliberately set NOT to fragment.
+    mem_limit: 4g
+    volumes:
+      - hf_cache:/root/.cache
+    restart: unless-stopped
+
+  # STARTUP GATE — indexes the four sample talks and exits. api + worker wait
+  # for it to finish (service_completed_successfully), so the UI is NEVER
+  # reachable with a half-indexed corpus: when localhost:8000 answers, the
+  # samples are ready. Idempotent + durable (Qdrant Cloud) — after the first
+  # successful run this exits in seconds. First run takes a few minutes
+  # (model download + 4 videos); watch its logs: docker compose logs -f seed
+  seed:
+    build: .
+    command: python -m src.seed
+    env_file: .env
+    environment:
+      CLIP_SERVICE_URL: ${CLIP_SERVICE_URL:-http://clip:8001}
+    volumes:
+      - ./data:/app/data
+      - hf_cache:/root/.cache
+    depends_on:
+      - clip
+    restart: "no"
+
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file: .env
+    environment:
+      CLIP_SERVICE_URL: ${CLIP_SERVICE_URL:-http://clip:8001}
+    volumes:
+      - ./data:/app/data          # STORAGE_PROVIDER=local only (dev)
+      - hf_cache:/root/.cache
+    depends_on:
+      clip:
+        condition: service_started
+      seed:
+        condition: service_completed_successfully   # UI up only after samples ready
+    restart: unless-stopped
+
+  worker:
+    build: .
+    command: python -m src.worker
+    env_file: .env
+    environment:
+      CLIP_SERVICE_URL: ${CLIP_SERVICE_URL:-http://clip:8001}
+      # Document chunks go to the dedicated batching embedder, not in-process
+      # and not to the clip service. In-process meant one bge model per
+      # concurrent flow-run subprocess (the memory ceiling); the clip service
+      # meant blocking search. Frames still use clip — that is what it is for.
+      DOC_EMBED_SERVICE_URL: ${DOC_EMBED_SERVICE_URL:-http://docembed:8002}
+      # One worker process executes up to WORKER_CONCURRENCY runs at once.
+      # With the clip service doing the embedding, each run is light
+      # (download + ffmpeg only) — raise this without adding RAM for models.
+      WORKER_CONCURRENCY: 6
+    volumes:
+      - ./data:/app/data
+      - hf_cache:/root/.cache
+    depends_on:
+      clip:
+        condition: service_started
+      docembed:
+        condition: service_started
+      seed:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    # Need more throughput? Replicas multiply it (all share the one clip model):
+    # docker compose up -d --scale worker=3   (-> 6 videos at once)
+
+volumes:
+  hf_cache:

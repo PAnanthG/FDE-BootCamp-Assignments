@@ -1,0 +1,141 @@
+{
+  "_what": "Regression baseline for the PROVIDED video pipeline (plan R8). Captured against the running stack before any retrieval-path change. If a later stage breaks video search, diff against this.",
+  "_captured_at": "2026-08-02T13:25:54+02:00",
+  "_commit": "abc11d3e743bb50a8f615ef1465f873be00fe588",
+  "_endpoint": "POST /api/ask",
+  "_question": "what is a large language model",
+  "_note": "Citations carry NO `kind` and NO `locator` object - the flat `ms` IS the locator. eval.py expects {kind, text, locator:{page|slide}}, which is SYSTEM_MAP finding F3.",
+  "llm_used": true,
+  "abstained": false,
+  "citation_count": 6,
+  "citation_fields": [
+    "deeplink",
+    "idx",
+    "media_url",
+    "modalities",
+    "ms",
+    "n",
+    "score",
+    "source",
+    "thumbnail",
+    "timestamp",
+    "title",
+    "transcript",
+    "url",
+    "video_id"
+  ],
+  "citations": [
+    {
+      "n": 1,
+      "video_id": "yt_LPZh9BOjkQs",
+      "title": "Large Language Models explained briefly",
+      "url": "https://youtu.be/LPZh9BOjkQs",
+      "source": "youtube",
+      "ms": 103462,
+      "timestamp": "01:43",
+      "idx": 11,
+      "thumbnail": "/api/frame/yt_LPZh9BOjkQs/000011.jpg?u=default",
+      "media_url": null,
+      "deeplink": "https://youtu.be/LPZh9BOjkQs?t=103",
+      "score": 0.048,
+      "transcript": "many different continuous values, usually called parameters or weights. Changing those parameters will change the probabilities that the model gives for the next word on a given input. What puts the large in large language model is how they can have hundreds of billions of these parameters. No human ever deliberately sets those parameters.",
+      "modalities": [
+        "frame",
+        "text"
+      ]
+    },
+    {
+      "n": 2,
+      "video_id": "yt_LPZh9BOjkQs",
+      "title": "Large Language Models explained briefly",
+      "url": "https://youtu.be/LPZh9BOjkQs",
+      "source": "youtube",
+      "ms": 39793,
+      "timestamp": "00:39",
+      "idx": 5,
+      "thumbnail": "/api/frame/yt_LPZh9BOjkQs/000005.jpg?u=default",
+      "media_url": null,
+      "deeplink": "https://youtu.be/LPZh9BOjkQs?t=39",
+      "score": 0.047,
+      "transcript": "seeing what it would predict to start the AI's answer, and then repeating this over and over with a growing script completing the dialogue. When you interact with a chatbot, this is exactly what's happening. A large language model is a sophisticated mathematical function that predicts what word comes next for any piece of text. Instead of predicting one word with certainty, though,",
+      "modalities": [
+        "frame",
+        "text"
+      ]
+    },
+    {
+      "n": 3,
+      "video_id": "yt_zjkBMFhNj_g",
+      "title": "[1hr Talk] Intro to Large Language Models",
+      "url": "https://youtu.be/zjkBMFhNj_g",
+      "source": "youtube",
+      "ms": 0,
+      "timestamp": "00:00",
+      "idx": 0,
+      "thumbnail": "/api/frame/yt_zjkBMFhNj_g/000000.jpg?u=default",
+      "media_url": null,
+      "deeplink": "https://youtu.be/zjkBMFhNj_g?t=0",
+      "score": 0.0467,
+      "transcript": "hi everyone so recently I gave a 30-minute talk on large language models just kind of like an intro talk um unfortunately that talk was not recorded but a lot of people came to me after the talk and they told me that uh they really liked the talk so I would just I thought I would just re-record it and basically put it up on YouTube so here we go the busy person's intro to large",
+      "modalities": [
+        "frame",
+        "text"
+      ]
+    },
+    {
+      "n": 4,
+      "video_id": "yt_zjkBMFhNj_g",
+      "title": "[1hr Talk] Intro to Large Language Models",
+      "url": "https://youtu.be/zjkBMFhNj_g",
+      "source": "youtube",
+      "ms": 19439,
+      "timestamp": "00:19",
+      "idx": null,
+      "thumbnail": null,
+      "media_url": null,
+      "deeplink": "https://youtu.be/zjkBMFhNj_g?t=19",
+      "score": 0.0167,
+      "transcript": "language models director Scott okay so let's begin first of all what is a large language model really well a large language model is just two files right um there will be two files in this hypothetical directory so for example working with a specific example of the Llama 270b model this is a large",
+      "modalities": [
+        "text"
+      ]
+    },
+    {
+      "n": 5,
+      "video_id": "yt_LPZh9BOjkQs",
+      "title": "Large Language Models explained briefly",
+      "url": "https://youtu.be/LPZh9BOjkQs",
+      "source": "youtube",
+      "ms": 63669,
+      "timestamp": "01:03",
+      "idx": 8,
+      "thumbnail": "/api/frame/yt_LPZh9BOjkQs/000008.jpg?u=default",
+      "media_url": null,
+      "deeplink": "https://youtu.be/LPZh9BOjkQs?t=63",
+      "score": 0.0164,
+      "transcript": null,
+      "modalities": [
+        "frame"
+      ]
+    },
+    {
+      "n": 6,
+      "video_id": "yt_LPZh9BOjkQs",
+      "title": "Large Language Models explained briefly",
+      "url": "https://youtu.be/LPZh9BOjkQs",
+      "source": "youtube",
+      "ms": 183458,
+      "timestamp": "03:03",
+      "idx": null,
+      "thumbnail": null,
+      "media_url": null,
+      "deeplink": "https://youtu.be/LPZh9BOjkQs?t=183",
+      "score": 0.0161,
+      "transcript": "but it also starts to make more reasonable predictions on text that it's never seen before. Given the huge number of parameters and the enormous amount of training data, the scale of computation involved in training a large language model is mind-boggling. To illustrate, imagine that you could perform one billion additions and multiplications every single second.",
+      "modalities": [
+        "text"
+      ]
+    }
+  ],
+  "answer": "A large language model (LLM) is a sophisticated mathematical function that predicts the next word in a text based on a vast number of parameters. \n\nLLMs operate by using many continuous values, known as parameters or weights, which can number in the hundreds of billions. These parameters influence the probabilities of the next word given a specific input, and they are not manually set by humans [1]. When interacting with a chatbot, the model predicts the next word by analyzing the context of the conversation, continuously refining its output through repeated calculations [2]. \n\nIn practical terms, a large language model can be represented by just two files, which contain the necessary data and code to function. For instance, the Llama 270b model exemplifies this structure [4]. The scale of computation required to train these models is immense, often involving billions of calculations per second, which allows them to make reasonable predictions even on previously unseen text [6]."
+}

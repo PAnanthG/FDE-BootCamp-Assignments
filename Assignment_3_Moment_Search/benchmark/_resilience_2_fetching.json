@@ -1,0 +1,47 @@
+{
+  "_resilience": {
+    "no_loss": true,
+    "kill_stage": "fetching",
+    "state_at_kill": {
+      "stage": "fetching",
+      "sources_in_stage": 5,
+      "already_indexed": 0
+    },
+    "registered": 10,
+    "lost": [],
+    "terminal_states": {
+      "indexed": 10
+    },
+    "recovery_seconds": 714.2,
+    "total_seconds": 725.2,
+    "chunks_after_recovery": {
+      "pa_00d339debc3b": 60,
+      "pa_4cb7c3352413": 68,
+      "pa_fc282c0cda94": 106,
+      "pa_63195f1903a8": 25,
+      "pa_58d94bc027fa": 85,
+      "pa_20151599fbbb": 48,
+      "pa_8b76986dbe24": 61,
+      "pa_fc8d32f196e0": 75,
+      "pa_33769e0bafc9": 71,
+      "pa_c3ab01e47e61": 45
+    },
+    "attempts": {
+      "pa_00d339debc3b": 1,
+      "pa_4cb7c3352413": 1,
+      "pa_fc282c0cda94": 1,
+      "pa_63195f1903a8": 1,
+      "pa_58d94bc027fa": 2,
+      "pa_20151599fbbb": 2,
+      "pa_8b76986dbe24": 2,
+      "pa_fc8d32f196e0": 2,
+      "pa_33769e0bafc9": 2,
+      "pa_c3ab01e47e61": 2
+    }
+  },
+  "no_loss_under_crash": {
+    "value": true,
+    "target": "0 dropped, all indexed",
+    "pass": true
+  }
+}

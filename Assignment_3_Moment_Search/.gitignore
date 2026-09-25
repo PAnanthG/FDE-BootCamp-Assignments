@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.python-version
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Runtime data (videos, extracted frames, qdrant storage)
+data/
+backend/data/
+qdrant_storage/
+
+# Model caches
+.cache/
+*.pt
+*.onnx
+
+# Node / frontend
+node_modules/
+dist/
+
+# Benchmark
+# Upstream ignored this whole directory. Assignment 3 requires benchmark/bench.py,
+# sla.json, queries.jsonl and _bench.json to be COMMITTED for inspection, so the
+# blanket ignore is removed - with it in place `git add benchmark/` silently does
+# nothing and the deliverable goes missing at submission time.
+benchmark/*.log
+benchmark/.cache/
+
+# Documents: corpus papers and decks stay local (they are large and not ours to
+# redistribute); the small fixtures the payload-integrity tests need are tracked.
+*.pdf
+*.pptx
+*.ppt
+# Re-include ONLY the fixture documents. A blanket `!tests/fixtures/**` also
+# un-ignores __pycache__ underneath it, which the guard caught at commit time.
+!tests/fixtures/*.pdf
+!tests/fixtures/*.pptx
+# The submission deliverable is ours and must not be swept up by the corpus
+# rule above - it is the document the assignment is handed in with.
+# Regenerate with:
+#   pandoc PRODUCT_EVAL.md -o PRODUCT_EVAL.pdf --pdf-engine=typst \
+#     --metadata-file=scripts/pdf-layout.yaml
+!PRODUCT_EVAL.pdf
+
+# Internal design notes (not published)
+MULTIMODAL_RETRIEVAL.md
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.log

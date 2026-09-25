@@ -1,0 +1,192 @@
+{
+  "accept_latency_p95_ms": {
+    "value": 82.6,
+    "target": 300,
+    "pass": true
+  },
+  "_ingest_window": {
+    "metric": "time_to_citations_ms - retrieval only, LLM excluded (see measure_time_to_citations docstring)",
+    "samples": 9,
+    "samples_with_ingest_in_flight": 9,
+    "max_in_flight": 10,
+    "window_valid": true,
+    "idle_p95_ms": 219.8,
+    "during_p95_ms": 641.3,
+    "_context_full_response_not_gated": {
+      "idle_p95_ms": 5345.2,
+      "during_p95_ms": 5018.7,
+      "ratio": 0.94,
+      "note": "includes LLM synthesis; disclosed for transparency, not what search_p95_during_ingest_ratio is gated on (n=10, not n=150 - a small informational sample, not a claim)"
+    }
+  },
+  "search_p95_during_ingest_ratio": {
+    "value": 2.92,
+    "target": 1.3,
+    "pass": false
+  },
+  "_backfill": {
+    "registered": 10,
+    "indexed": 10,
+    "failed": 0,
+    "chunks": 644,
+    "seconds_to_all_terminal": 245.4,
+    "drain_timing_source": "measured_after_p95_window",
+    "failures": []
+  },
+  "_recall_detail": [
+    {
+      "query": "what are the three paradigms of RAG",
+      "kind": "paper",
+      "recalled": true,
+      "n_citations": 10
+    },
+    {
+      "query": "what problems does naive RAG have",
+      "kind": "paper",
+      "recalled": true,
+      "n_citations": 2
+    },
+    {
+      "query": "how does hybrid retrieval combine sparse and dense signals",
+      "kind": "paper",
+      "recalled": true,
+      "n_citations": 10
+    },
+    {
+      "query": "what is query rewriting in retrieval augmented generation",
+      "kind": "paper",
+      "recalled": true,
+      "n_citations": 10
+    },
+    {
+      "query": "how is chunk size chosen when indexing documents",
+      "kind": "paper",
+      "recalled": true,
+      "n_citations": 10
+    },
+    {
+      "query": "what is reranking used for in a RAG pipeline",
+      "kind": "paper",
+      "recalled": true,
+      "n_citations": 10
+    },
+    {
+      "query": "how is retrieval augmented generation evaluated",
+      "kind": "paper",
+      "recalled": true,
+      "n_citations": 10
+    },
+    {
+      "query": "what is modular RAG",
+      "kind": "paper",
+      "recalled": true,
+      "n_citations": 1
+    },
+    {
+      "query": "what is fine-tuning of the retriever",
+      "kind": "paper",
+      "recalled": true,
+      "n_citations": 5
+    },
+    {
+      "query": "what is a vector database used for",
+      "kind": "deck",
+      "recalled": true,
+      "n_citations": 10
+    },
+    {
+      "query": "how does HNSW work",
+      "kind": "deck",
+      "recalled": true,
+      "n_citations": 2
+    },
+    {
+      "query": "what is approximate nearest neighbour search",
+      "kind": "deck",
+      "recalled": false,
+      "n_citations": 10
+    },
+    {
+      "query": "what is cosine similarity",
+      "kind": "deck",
+      "recalled": true,
+      "n_citations": 7
+    },
+    {
+      "query": "what does an embedding represent",
+      "kind": "deck",
+      "recalled": true,
+      "n_citations": 10
+    },
+    {
+      "query": "why are vector indexes needed for similarity search",
+      "kind": "deck",
+      "recalled": true,
+      "n_citations": 10
+    },
+    {
+      "query": "what is a k nearest neighbour query",
+      "kind": "deck",
+      "recalled": true,
+      "n_citations": 10
+    },
+    {
+      "query": "what is word2vec",
+      "kind": "deck",
+      "recalled": true,
+      "n_citations": 3
+    },
+    {
+      "query": "how is the skip-gram objective defined",
+      "kind": "deck",
+      "recalled": true,
+      "n_citations": 7
+    },
+    {
+      "query": "what does distributional semantics mean",
+      "kind": "deck",
+      "recalled": false,
+      "n_citations": 1
+    },
+    {
+      "query": "how are word vectors used to measure similarity",
+      "kind": "deck",
+      "recalled": true,
+      "n_citations": 10
+    },
+    {
+      "query": "what is a large language model",
+      "kind": "video",
+      "recalled": true,
+      "n_citations": 10
+    },
+    {
+      "query": "how are neural networks trained on text",
+      "kind": "video",
+      "recalled": true,
+      "n_citations": 10
+    },
+    {
+      "query": "what is a transformer",
+      "kind": "video",
+      "recalled": true,
+      "n_citations": 6
+    },
+    {
+      "query": "what does attention do in a neural network",
+      "kind": "video",
+      "recalled": false,
+      "n_citations": 10
+    }
+  ],
+  "recall_at_10": {
+    "value": 0.875,
+    "target": 0.7,
+    "pass": true
+  },
+  "ingest_throughput_chunks_per_s": {
+    "value": 2.62,
+    "target": 8,
+    "pass": false
+  }
+}
